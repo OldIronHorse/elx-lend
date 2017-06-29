@@ -2,17 +2,16 @@ defmodule Lend do
   @moduledoc """
   Documentation for Lend.
   """
+  
+  defmodule Book do
+    defstruct borrow: [], lend: []
+  end
 
-  @doc """
-  Hello world.
+  defmodule Order do
+    defstruct [:side,:size,:rate]
+  end
 
-  ## Examples
-
-      iex> Lend.hello
-      :world
-
-  """
-  def hello do
-    :world
+  def add(book,%Order{side: :borrow} = order) do
+    %{book | borrow: [order|book.borrow]}
   end
 end
