@@ -14,4 +14,7 @@ defmodule Lend do
   def add(book,%Order{side: :borrow} = order) do
     %{book | borrow: [order|book.borrow]}
   end
+  def add(book,%Order{side: :lend} = order) do
+    %{book | lend: [order|book.lend]}
+  end
 end
