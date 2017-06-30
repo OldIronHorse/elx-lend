@@ -12,7 +12,7 @@ defmodule Lend do
   end
 
   def add(book,%Order{side: :borrow} = order) do
-    %{book | borrow: [order|book.borrow]}
+    %{book | borrow: Enum.sort([order|book.borrow], &(&1.rate > &2.rate))}
   end
   def add(book,%Order{side: :lend} = order) do
     %{book | lend: [order|book.lend]}
