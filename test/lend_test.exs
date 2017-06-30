@@ -44,11 +44,11 @@ defmodule LendTest do
 
   test "add borrow orders respecting time priority" do
     assert %Lend.Book{} 
-    |> add %Lend.Order{side: :borrow,size: 10000,rate: 0.04}
-    |> add %Lend.Order{side: :borrow,size: 10003,rate: 0.04}
-    |> add %Lend.Order{side: :borrow,size: 10001,rate: 0.04}
-    |> add %Lend.Order{side: :borrow,size: 10002,rate: 0.04}
-    |> add %Lend.Order{side: :borrow,size: 10004,rate: 0.05} ==
+    |> add(%Lend.Order{side: :borrow,size: 10000,rate: 0.04})
+    |> add(%Lend.Order{side: :borrow,size: 10003,rate: 0.04})
+    |> add(%Lend.Order{side: :borrow,size: 10001,rate: 0.04})
+    |> add(%Lend.Order{side: :borrow,size: 10002,rate: 0.04})
+    |> add(%Lend.Order{side: :borrow,size: 10004,rate: 0.05}) ==
       %Lend.Book{borrow: [%Lend.Order{side: :borrow,size: 10004,rate: 0.05},
                           %Lend.Order{side: :borrow,size: 10000,rate: 0.04},
                           %Lend.Order{side: :borrow,size: 10003,rate: 0.04},

@@ -12,9 +12,30 @@ defmodule Lend do
   end
 
   def add(book,%Order{side: :borrow} = order) do
-    %{book | borrow: Enum.sort([order|book.borrow], &(&1.rate > &2.rate))}
+    %{book | borrow: insert(book.borrow, order)}
   end
   def add(book,%Order{side: :lend} = order) do
     %{book | lend: [order|book.lend]}
+  end
+
+  def insert(orders,order) do
+    insert(Enum.reverse(orders),order,[])
+  end
+  def insert([o|os],%Order{side: :borrow} = order, orders) do
+    if order.rate > o.rate do
+      insert(os,order,[o|orders])
+    else
+      Enum.reverse([o|os])++[order|orders]
+    end
+  end
+  def insert([o|os],%Order{side: :lend} = order, orders) do
+    if order.rate < o.rate do
+      insert(os,order,[o|orders])
+    else
+      Enum.reverse([o|os])++[order|orders]
+    end
+  end
+  def insert([],order,orders) do
+    [order|orders]
   end
 end
