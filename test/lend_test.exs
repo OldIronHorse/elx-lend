@@ -16,20 +16,32 @@ defmodule LendTest do
       %Lend.Book{lend: [%Lend.Order{side: :lend,size: 10000,rate: 0.05}],borrow: []}
   end
 
-  test "add of a borrow order to top of book" do
+  test "add a borrow order to top of book" do
     assert add(%Lend.Book{borrow: [%Lend.Order{side: :borrow,size: 10000,rate: 0.05}]},
                %Lend.Order{side: :borrow,size: 10000,rate: 0.06}) ==
       %Lend.Book{borrow: [%Lend.Order{side: :borrow,size: 10000,rate: 0.06},
-                          %Lend.Order{side: :borrow,size: 10000,rate: 0.05}],
-                 lend: []}
+                          %Lend.Order{side: :borrow,size: 10000,rate: 0.05}]}
+  end
+
+  test "add a lend order to top of book" do
+    assert add(%Lend.Book{lend: [%Lend.Order{side: :lend,size: 10000,rate: 0.06}]},
+               %Lend.Order{side: :lend,size: 10000,rate: 0.05}) ==
+      %Lend.Book{lend: [%Lend.Order{side: :lend,size: 10000,rate: 0.05},
+                          %Lend.Order{side: :lend,size: 10000,rate: 0.06}]}
   end
 
   test "add of a borrow order to bottom of book" do
     assert add(%Lend.Book{borrow: [%Lend.Order{side: :borrow,size: 10000,rate: 0.05}]},
                %Lend.Order{side: :borrow,size: 10000,rate: 0.04}) ==
       %Lend.Book{borrow: [%Lend.Order{side: :borrow,size: 10000,rate: 0.05},
-                          %Lend.Order{side: :borrow,size: 10000,rate: 0.04}],
-                 lend: []}
+                          %Lend.Order{side: :borrow,size: 10000,rate: 0.04}]}
+  end
+
+  test "add of a lend order to bottom of book" do
+    assert add(%Lend.Book{lend: [%Lend.Order{side: :lend,size: 10000,rate: 0.05}]},
+               %Lend.Order{side: :lend,size: 10000,rate: 0.06}) ==
+      %Lend.Book{lend: [%Lend.Order{side: :lend,size: 10000,rate: 0.05},
+                          %Lend.Order{side: :lend,size: 10000,rate: 0.06}]}
   end
 
   test "add of a borrow order into middle of book" do
@@ -38,8 +50,16 @@ defmodule LendTest do
                %Lend.Order{side: :borrow,size: 10000,rate: 0.04}) ==
       %Lend.Book{borrow: [%Lend.Order{side: :borrow,size: 10000,rate: 0.05},
                           %Lend.Order{side: :borrow,size: 10000,rate: 0.04},
-                          %Lend.Order{side: :borrow,size: 10000,rate: 0.03}],
-                 lend: []}
+                          %Lend.Order{side: :borrow,size: 10000,rate: 0.03}]}
+  end
+
+  test "add of a lend order into middle of book" do
+    assert add(%Lend.Book{lend: [%Lend.Order{side: :lend,size: 10000,rate: 0.03},
+                                   %Lend.Order{side: :lend,size: 10000,rate: 0.05}]},
+               %Lend.Order{side: :lend,size: 10000,rate: 0.04}) ==
+      %Lend.Book{lend: [%Lend.Order{side: :lend,size: 10000,rate: 0.03},
+                          %Lend.Order{side: :lend,size: 10000,rate: 0.04},
+                          %Lend.Order{side: :lend,size: 10000,rate: 0.05}]}
   end
 
   test "add borrow orders respecting time priority" do
@@ -54,5 +74,19 @@ defmodule LendTest do
                           %Lend.Order{side: :borrow,size: 10003,rate: 0.04},
                           %Lend.Order{side: :borrow,size: 10001,rate: 0.04},
                           %Lend.Order{side: :borrow,size: 10002,rate: 0.04}]}
+  end
+
+  test "add lend orders respecting time priority" do
+    assert %Lend.Book{} 
+    |> add(%Lend.Order{side: :lend,size: 10000,rate: 0.04})
+    |> add(%Lend.Order{side: :lend,size: 10003,rate: 0.04})
+    |> add(%Lend.Order{side: :lend,size: 10001,rate: 0.04})
+    |> add(%Lend.Order{side: :lend,size: 10002,rate: 0.04})
+    |> add(%Lend.Order{side: :lend,size: 10004,rate: 0.03}) ==
+      %Lend.Book{lend: [%Lend.Order{side: :lend,size: 10004,rate: 0.03},
+                          %Lend.Order{side: :lend,size: 10000,rate: 0.04},
+                          %Lend.Order{side: :lend,size: 10003,rate: 0.04},
+                          %Lend.Order{side: :lend,size: 10001,rate: 0.04},
+                          %Lend.Order{side: :lend,size: 10002,rate: 0.04}]}
   end
 end
