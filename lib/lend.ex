@@ -43,8 +43,23 @@ defmodule Lend do
     [order|orders]
   end
 
+  #TODO break out loan() function to create a loan from 2 orders
   def cross(book) do
     cross(book,[])
+  end
+  def cross(%Book{borrow: [%Order{rate: borrow_rate}=b|bs],
+                  lend: [%Order{rate: lend_rate}=l|ls]}=book,loans) when lend_rate < borrow_rate do
+    rate = (b.rate+l.rate)/2
+    cond do
+      b.size == l.size ->
+        cross(%{book | borrow: bs,lend: ls},[%Loan{borrower: b.party, lender: l.party, rate: rate, size: b.size}|loans])
+      b.size < l.size ->
+        cross(%{book | borrow: bs,lend: [%{l | size: l.size-b.size}|ls]},
+             [%Loan{borrower: b.party, lender: l.party, rate: rate, size: b.size}|loans])
+      b.size > l.size ->
+        cross(%{book | borrow: [%{b | size: b.size-l.size}|bs],lend: ls},
+              [%Loan{borrower: b.party, lender: l.party, rate: rate, size: l.size}|loans])
+    end
   end
   def cross(%Book{borrow: [%Order{size: size, rate: rate}=b|bs],lend: [%Order{size: size, rate: rate}=l|ls]},loans) do
     cross(%Book{borrow: bs, lend: ls},
