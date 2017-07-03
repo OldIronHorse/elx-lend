@@ -51,6 +51,11 @@ defmodule Lend do
     {%Book{borrow: [%{b | size: borrow_size-lend_size}|bs],lend: ls},
      [%Loan{borrower: b.party, lender: l.party, rate: rate, size: lend_size}]}
   end
+  def cross(%Book{borrow: [%Order{size: borrow_size, rate: rate}=b|bs],
+                  lend: [%Order{size: lend_size, rate: rate}=l|ls]}) when borrow_size < lend_size do
+    {%Book{borrow: bs,lend: [%{l | size: lend_size-borrow_size}|ls]},
+     [%Loan{borrower: b.party, lender: l.party, rate: rate, size: borrow_size}]}
+  end
   def cross(book) do
     {book,[]}
   end

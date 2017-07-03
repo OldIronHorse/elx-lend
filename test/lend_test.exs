@@ -124,4 +124,15 @@ defmodule LendTest do
                   lend: [%Lend.Order{side: :lend,size: 9000,rate: 0.05}]},
        [%Lend.Loan{rate: 0.04,size: 6000,lender: "Rich",borrower: "Pete"}]}
   end
+
+  test "cross: partial lend" do
+    assert cross(%Lend.Book{borrow: [%Lend.Order{side: :borrow,size: 10000,rate: 0.04,party: "Pete"},
+                                     %Lend.Order{side: :borrow,size: 11000,rate: 0.03}],
+                            lend: [%Lend.Order{side: :lend,size: 60000,rate: 0.04,party: "Rich"},
+                                   %Lend.Order{side: :lend,size: 9000,rate: 0.05}]}) ==
+      {%Lend.Book{borrow: [%Lend.Order{side: :borrow,size: 11000,rate: 0.03}],
+                  lend: [%Lend.Order{side: :lend,size: 50000,rate: 0.04,party: "Rich"},
+                         %Lend.Order{side: :lend,size: 9000,rate: 0.05}]},
+       [%Lend.Loan{rate: 0.04,size: 10000,lender: "Rich",borrower: "Pete"}]}
+  end
 end
