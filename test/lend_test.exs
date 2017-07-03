@@ -89,4 +89,28 @@ defmodule LendTest do
                           %Lend.Order{side: :lend,size: 10001,rate: 0.04},
                           %Lend.Order{side: :lend,size: 10002,rate: 0.04}]}
   end
+
+  test "cross: empty book" do
+    assert cross(%Lend.Book{}) == {%Lend.Book{},[]}
+  end
+
+  test "cross: no lenders" do
+    assert cross(%Lend.Book{borrow: [%Lend.Order{side: :borrow,size: 10000,rate: 0.05}]}) ==
+      {%Lend.Book{borrow: [%Lend.Order{side: :borrow,size: 10000,rate: 0.05}]},[]}
+  end
+
+  test "cross: no borrowers" do
+    assert cross(%Lend.Book{lend: [%Lend.Order{side: :lend,size: 10000,rate: 0.05}]}) ==
+      {%Lend.Book{lend: [%Lend.Order{side: :lend,size: 10000,rate: 0.05}]},[]}
+  end
+
+  test "cross: exact match" do
+    assert cross(%Lend.Book{borrow: [%Lend.Order{side: :borrow,size: 10000,rate: 0.04,party: "Pete"},
+                                     %Lend.Order{side: :borrow,size: 11000,rate: 0.03}],
+                            lend: [%Lend.Order{side: :lend,size: 10000,rate: 0.04,party: "Rich"},
+                                   %Lend.Order{side: :lend,size: 9000,rate: 0.05}]}) ==
+      {%Lend.Book{borrow: [%Lend.Order{side: :borrow,size: 11000,rate: 0.03}],
+                  lend: [%Lend.Order{side: :lend,size: 9000,rate: 0.05}]},
+       [%Lend.Loan{rate: 0.04,size: 10000,lender: "Rich",borrower: "Pete"}]}
+  end
 end
