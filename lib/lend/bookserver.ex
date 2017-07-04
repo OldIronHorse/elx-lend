@@ -14,7 +14,14 @@ defmodule Lend.BookServer do
   Fetches the current book
   """
   def fetch(server) do
-    GenServer.call(server, :fetch)
+    GenServer.call(server,:fetch)
+  end
+
+  @doc """
+  Adds an order to the order book
+  """
+  def add(server,order) do
+    GenServer.cast(server,{:add,order})
   end
 
   ## GenServer callbacks
@@ -25,5 +32,9 @@ defmodule Lend.BookServer do
 
   def handle_call(:fetch,_from,book) do
     {:reply,book,book}
+  end
+
+  def handle_cast({:add,order},book) do
+    {:noreply,Lend.add(book,order)}
   end
 end
