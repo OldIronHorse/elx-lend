@@ -44,7 +44,8 @@ defmodule Lend do
   end
 
   #TODO break out loan() function to create a loan from 2 orders
-  def loan(%Order{side: :borrow,rate: rate}=borrow,%Order{side: :lend,rate: rate}=lend) do
+  def loan(%Order{side: :borrow,rate: borrow_rate}=borrow,%Order{side: :lend,rate: lend_rate}=lend) when borrow_rate >= lend_rate do
+    rate = (borrow_rate+lend_rate)/2
     %Loan{rate: rate,size: min(borrow.size,lend.size),borrower: borrow.party,lender: lend.party}
   end
 
@@ -52,30 +53,15 @@ defmodule Lend do
     cross(book,[])
   end
   def cross(%Book{borrow: [%Order{rate: borrow_rate}=b|bs],
-                  lend: [%Order{rate: lend_rate}=l|ls]}=book,loans) when lend_rate < borrow_rate do
-    rate = (b.rate+l.rate)/2
+                  lend: [%Order{rate: lend_rate}=l|ls]}=book,loans) when lend_rate <= borrow_rate do
+    new_loan = loan(b,l)
     cond do
       b.size == l.size ->
-        cross(%{book | borrow: bs,lend: ls},[%Loan{borrower: b.party, lender: l.party, rate: rate, size: b.size}|loans])
+        cross(%{book | borrow: bs,lend: ls},[new_loan|loans])
       b.size < l.size ->
-        cross(%{book | borrow: bs,lend: [%{l | size: l.size-b.size}|ls]},
-             [%Loan{borrower: b.party, lender: l.party, rate: rate, size: b.size}|loans])
+        cross(%{book | borrow: bs,lend: [%{l | size: l.size-new_loan.size}|ls]},[new_loan|loans])
       b.size > l.size ->
-        cross(%{book | borrow: [%{b | size: b.size-l.size}|bs],lend: ls},
-              [%Loan{borrower: b.party, lender: l.party, rate: rate, size: l.size}|loans])
-    end
-  end
-  def cross(%Book{borrow: [%Order{rate: rate}=b|bs],lend: [%Order{rate: rate}=l|ls]},loans) do
-    cond do
-      b.size == l.size ->
-        cross(%Book{borrow: bs, lend: ls},
-              [%Loan{borrower: b.party, lender: l.party, rate: rate, size: b.size}|loans])
-      b.size > l.size ->
-        cross(%Book{borrow: [%{b | size: b.size-l.size}|bs],lend: ls},
-              [%Loan{borrower: b.party, lender: l.party, rate: rate, size: l.size}|loans])
-      b.size < l.size ->
-        cross(%Book{borrow: bs,lend: [%{l | size: l.size-b.size}|ls]},
-              [%Loan{borrower: b.party, lender: l.party, rate: rate, size: b.size}|loans])
+        cross(%{book | borrow: [%{b | size: b.size-new_loan.size}|bs],lend: ls},[new_loan|loans])
     end
   end
   def cross(book,loans) do
