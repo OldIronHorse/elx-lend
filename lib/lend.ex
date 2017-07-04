@@ -44,6 +44,10 @@ defmodule Lend do
   end
 
   #TODO break out loan() function to create a loan from 2 orders
+  def loan(%Order{side: :borrow,rate: rate}=borrow,%Order{side: :lend,rate: rate}=lend) do
+    %Loan{rate: rate,size: min(borrow.size,lend.size),borrower: borrow.party,lender: lend.party}
+  end
+
   def cross(book) do
     cross(book,[])
   end

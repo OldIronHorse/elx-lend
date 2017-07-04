@@ -157,4 +157,22 @@ defmodule LendTest do
        [%Lend.Loan{rate: 0.045,size: 6000,lender: "Rich",borrower: "Pete"},
         %Lend.Loan{rate: 0.05,size: 4000,lender: "Bob",borrower: "Pete"}]}
   end
+
+  test "loan: exactly matching" do
+    assert loan(%Lend.Order{side: :borrow,size: 10000,rate: 0.05,party: "Pete"},
+                %Lend.Order{side: :lend,size: 10000,rate: 0.05,party: "Bill"}) ==
+      %Lend.Loan{rate: 0.05,lender: "Bill",borrower: "Pete",size: 10000}
+  end
+
+  test "loan: bigger borrow" do
+    assert loan(%Lend.Order{side: :borrow,size: 11000,rate: 0.05,party: "Pete"},
+                %Lend.Order{side: :lend,size: 10000,rate: 0.05,party: "Bill"}) ==
+      %Lend.Loan{rate: 0.05,lender: "Bill",borrower: "Pete",size: 10000}
+  end
+
+  test "loan: bigger lend" do
+    assert loan(%Lend.Order{side: :borrow,size: 10000,rate: 0.05,party: "Pete"},
+                %Lend.Order{side: :lend,size: 11000,rate: 0.05,party: "Bill"}) ==
+      %Lend.Loan{rate: 0.05,lender: "Bill",borrower: "Pete",size: 10000}
+  end
 end
