@@ -2,7 +2,7 @@ defmodule BookServerTest do
   use ExUnit.Case, async: true 
   
   setup do
-    {:ok,book_server} = Lend.BookServer.start_link
+    {:ok,book_server} = Lend.BookServer.start_link(Lend.BookServer)
     {:ok,book_server: book_server}
   end
 

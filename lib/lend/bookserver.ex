@@ -6,8 +6,8 @@ defmodule Lend.BookServer do
   @doc """
   Starts the book server
   """
-  def start_link do
-    GenServer.start_link(__MODULE__,%Lend.Book{},[])
+  def start_link(name) do
+    GenServer.start_link(__MODULE__,%Lend.Book{}, name: name)
   end
 
   @doc """
