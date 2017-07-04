@@ -24,6 +24,13 @@ defmodule Lend.BookServer do
     GenServer.cast(server,{:add,order})
   end
 
+  @doc """
+  Crosses all matching orders
+  """
+  def cross(server) do
+    GenServer.call(server,:cross)
+  end
+
   ## GenServer callbacks
 
   def init(:ok) do
@@ -32,6 +39,10 @@ defmodule Lend.BookServer do
 
   def handle_call(:fetch,_from,book) do
     {:reply,book,book}
+  end
+  def handle_call(:cross,_from,book) do
+    {new_book,loans} = Lend.cross(book)
+    {:reply,loans,new_book}
   end
 
   def handle_cast({:add,order},book) do
