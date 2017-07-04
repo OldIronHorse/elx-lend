@@ -7,7 +7,7 @@ defmodule Lend.BookServer do
   Starts the book server
   """
   def start_link do
-    GenServer.start_link(__MODULE__,:ok,[])
+    GenServer.start_link(__MODULE__,%Lend.Book{},[])
   end
 
   @doc """
@@ -33,8 +33,8 @@ defmodule Lend.BookServer do
 
   ## GenServer callbacks
 
-  def init(:ok) do
-    {:ok,%Lend.Book{}}
+  def init(book) do
+    {:ok,book}
   end
 
   def handle_call(:fetch,_from,book) do
