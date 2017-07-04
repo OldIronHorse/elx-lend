@@ -164,6 +164,12 @@ defmodule LendTest do
       %Lend.Loan{rate: 0.05,lender: "Bill",borrower: "Pete",size: 10000}
   end
 
+  test "loan: backwardation" do
+    assert loan(%Lend.Order{side: :borrow,size: 10000,rate: 0.06,party: "Pete"},
+                %Lend.Order{side: :lend,size: 10000,rate: 0.04,party: "Bill"}) ==
+      %Lend.Loan{rate: 0.05,lender: "Bill",borrower: "Pete",size: 10000}
+  end
+
   test "loan: bigger borrow" do
     assert loan(%Lend.Order{side: :borrow,size: 11000,rate: 0.05,party: "Pete"},
                 %Lend.Order{side: :lend,size: 10000,rate: 0.05,party: "Bill"}) ==
