@@ -1,5 +1,5 @@
 defmodule LendTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
   import Lend
 
   test "empty book" do

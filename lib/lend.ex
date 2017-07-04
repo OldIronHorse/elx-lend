@@ -43,7 +43,6 @@ defmodule Lend do
     [order|orders]
   end
 
-  #TODO break out loan() function to create a loan from 2 orders
   def loan(%Order{side: :borrow,rate: borrow_rate}=borrow,%Order{side: :lend,rate: lend_rate}=lend) when borrow_rate >= lend_rate do
     rate = (borrow_rate+lend_rate)/2
     %Loan{rate: rate,size: min(borrow.size,lend.size),borrower: borrow.party,lender: lend.party}
