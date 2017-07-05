@@ -33,7 +33,15 @@ defmodule BookServerTest do
                  lend: [%Lend.Order{side: :lend,size: 9000,rate: 0.05,party: "Dave"}]}
   end
 
-  test "add: missing side", %{book_server: book_server} do
+  test "add: missing params", %{book_server: book_server} do
     assert catch_error(Lend.BookServer.add(book_server,%Lend.Order{size: 10000,rate: 0.05,party: "Bob"}))
+    assert catch_error(Lend.BookServer.add(book_server,%Lend.Order{side: :lend,rate: 0.05,party: "Bob"}))
+    assert catch_error(Lend.BookServer.add(book_server,%Lend.Order{side: :lend,size: 10000,party: "Bob"}))
+    assert catch_error(Lend.BookServer.add(book_server,%Lend.Order{side: :lend,size: 10000,rate: 0.05}))
+    assert catch_error(Lend.BookServer.add(book_server,%Lend.Order{}))
+    assert catch_error(Lend.BookServer.add(book_server,%Lend.Order{side: :lend,size: -10000,rate: 0.05,party: "Bob"}))
+    assert catch_error(Lend.BookServer.add(book_server,%Lend.Order{side: :lend,size: 10000,rate: -0.05,party: "Bob"}))
+    assert catch_error(Lend.BookServer.add(book_server,%Lend.Order{side: :lend,size: "10000",rate: 0.05,party: "Bob"}))
+    assert catch_error(Lend.BookServer.add(book_server,%Lend.Order{side: :lend,size: 10000,rate: "0.05",party: "Bob"}))
   end
 end

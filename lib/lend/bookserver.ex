@@ -21,7 +21,7 @@ defmodule Lend.BookServer do
   Adds an order to the order book
   """
   def add(server,%Lend.Order{side: side,size: size,rate: rate,party: party} = order) 
-      when side in [:lend,:borrow] and size > 0 and rate > 0 and not is_nil(party) do
+      when side in [:lend,:borrow] and is_number(size) and size > 0 and is_number(rate) and rate > 0 and not is_nil(party) do
     GenServer.cast(server,{:add,order})
   end
 
