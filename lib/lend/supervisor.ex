@@ -6,7 +6,9 @@ defmodule Lend.Supervisor do
   end
 
   def init(:ok) do
-    children = [worker(Lend.BookServer,[:bookserver_10Y])]
+    children = [worker(Lend.BookServer,[:bookserver_3Y],id: :bs_3Y),
+                worker(Lend.BookServer,[:bookserver_5Y],id: :bs_5Y),
+                worker(Lend.BookServer,[:bookserver_10Y],id: :bs_10Y)]
     supervise(children,strategy: :one_for_one)
   end
 end
