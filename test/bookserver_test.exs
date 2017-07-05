@@ -23,13 +23,17 @@ defmodule BookServerTest do
     orders = [%Lend.Order{side: :borrow,size: 10000,rate: 0.04,party: "Pete"},
               %Lend.Order{side: :borrow,size: 11000,rate: 0.04,party: "Bob"},
               %Lend.Order{side: :lend,size: 15000,rate: 0.04,party: "Rich"},
-              %Lend.Order{side: :lend,size: 9000,rate: 0.05}]
+              %Lend.Order{side: :lend,size: 9000,rate: 0.05,party: "Dave"}]
     Enum.map(orders,&(Lend.BookServer.add(book_server,&1)))
     assert Lend.BookServer.cross(book_server) == 
       [%Lend.Loan{rate: 0.04,size: 10000,lender: "Rich",borrower: "Pete"},
        %Lend.Loan{rate: 0.04,size: 5000,lender: "Rich",borrower: "Bob"}]
     assert Lend.BookServer.fetch(book_server) == 
       %Lend.Book{borrow: [%Lend.Order{side: :borrow,size: 6000,rate: 0.04,party: "Bob"}],
-                 lend: [%Lend.Order{side: :lend,size: 9000,rate: 0.05}]}
+                 lend: [%Lend.Order{side: :lend,size: 9000,rate: 0.05,party: "Dave"}]}
+  end
+
+  test "add: missing side", %{book_server: book_server} do
+    assert catch_error(Lend.BookServer.add(book_server,%Lend.Order{size: 10000,rate: 0.05,party: "Bob"}))
   end
 end
