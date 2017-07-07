@@ -1,5 +1,6 @@
 defmodule Lend.BookServer do
   use GenServer
+  require Logger
   
   ## Client API
 
@@ -47,6 +48,7 @@ defmodule Lend.BookServer do
   end
 
   def handle_cast({:add,order},book) do
+    Logger.info "Adding order #{inspect(order)}"
     {:noreply,Lend.add(book,order)}
   end
 end
