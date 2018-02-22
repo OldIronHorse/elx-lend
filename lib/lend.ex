@@ -3,10 +3,6 @@ defmodule Lend do
   Documentation for Lend.
   """
   
-  defmodule Book do
-    defstruct borrow: [], lend: []
-  end
-
   defmodule Order do
     defstruct [:side,:size,:rate,:party]
   end
@@ -51,7 +47,7 @@ defmodule Lend do
   def cross(book) do
     cross(book,[])
   end
-  def cross(%Book{borrow: [%Order{rate: borrow_rate}=b|bs],
+  def cross(%Lend.Book{borrow: [%Order{rate: borrow_rate}=b|bs],
                   lend: [%Order{rate: lend_rate}=l|ls]}=book,loans) when lend_rate <= borrow_rate do
     new_loan = loan(b,l)
     cond do
