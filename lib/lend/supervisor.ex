@@ -1,16 +1,19 @@
 defmodule Lend.Supervisor do
   use Supervisor
+  require Logger
 
   def start_link do
     Supervisor.start_link(__MODULE__, :ok)
   end
 
   def init(:ok) do
-    children = [
-      worker(Lend.BookServer, [:bookserver_3Y], id: :bs_3Y),
-      worker(Lend.BookServer, [:bookserver_5Y], id: :bs_5Y),
-      worker(Lend.BookServer, [:bookserver_10Y], id: :bs_10Y)
-    ]
+    books = Application.get_env(:lend, :books)
+    Logger.info("books=#{Kernel.inspect(books)}")
+
+    children = 
+      for book <- books do
+        worker(Lend.BookServer, [book], id: book)
+      end
 
     supervise(children, strategy: :one_for_one)
   end

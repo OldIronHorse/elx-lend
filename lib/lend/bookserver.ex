@@ -8,6 +8,7 @@ defmodule Lend.BookServer do
   Starts the book server
   """
   def start_link(name) do
+    Logger.info("name=#{Kernel.inspect(name)}")
     GenServer.start_link(__MODULE__, %Lend.Book{}, name: name)
   end
 
