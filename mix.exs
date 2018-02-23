@@ -17,7 +17,10 @@ defmodule Lend.Mixfile do
   # Type "mix help compile.app" for more information
   def application do
     # Specify extra applications you'll use from Erlang/Elixir
-    [extra_applications: [:logger], mod: {Lend.Application, []}]
+    [
+      mod: {Lend, []},
+      extra_applications: [:logger], mod: {Lend.Application, []}
+    ]
   end
 
   # Dependencies can be Hex packages:
