@@ -20,8 +20,6 @@ use Mix.Config
 #
 #     config :logger, level: :info
 #
-config :lend,
-  books: [:m6, :y1, :m18, :y3, :y5, :y10]
 
 # It is also possible to import configuration files, relative to this
 # directory. For example, you can emulate configuration per environment
@@ -29,4 +27,4 @@ config :lend,
 # Configuration from the imported file will override the ones defined
 # here (which is why it is important to import them last).
 #
-# import_config "#{Mix.env}.exs"
+import_config "#{Mix.env}.exs"
