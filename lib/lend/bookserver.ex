@@ -45,12 +45,12 @@ defmodule Lend.BookServer do
   end
 
   def handle_call(:cross, _from, book) do
-    {new_book, loans} = Lend.cross(book)
+    {new_book, loans} = Lend.Book.cross(book)
     {:reply, loans, new_book}
   end
 
   def handle_cast({:add, order}, book) do
     Logger.info("Adding order #{inspect(order)}")
-    {:noreply, Lend.add(book, order)}
+    {:noreply, Lend.Book.add(book, order)}
   end
 end
