@@ -11,7 +11,7 @@ defmodule Lend.Application do
     # Define workers and child supervisors to be supervised
     children = [
       # Starts a worker by calling: Lend.Worker.start_link(arg1, arg2, arg3)
-      worker(Lend.BookServer, [:five_year]),
+      worker(Lend.BookServer, [:five_year])
     ]
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
