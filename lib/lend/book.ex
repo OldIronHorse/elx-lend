@@ -1,8 +1,8 @@
 defmodule Lend.Book do
-  defstruct borrow: [], lend: []
+  defstruct [:term, borrow: [], lend: []]
 
-  def new() do
-    %Lend.Book{}
+  def new(term) do
+    %Lend.Book{term: term}
   end
 
   def add(book, %Lend.Order{side: :borrow} = order) do
@@ -49,7 +49,7 @@ defmodule Lend.Book do
         loans
       )
       when lend_rate <= borrow_rate do
-    new_loan = Lend.Loan.new(b, l)
+    new_loan = Lend.Loan.new(b, l, book.term)
 
     cond do
       b.leaves == l.leaves ->

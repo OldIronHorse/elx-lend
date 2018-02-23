@@ -2,12 +2,12 @@ defmodule BookServerTest do
   use ExUnit.Case, async: true
 
   setup do
-    {:ok, book_server} = Lend.BookServer.start_link(Lend.BookServer)
+    {:ok, book_server} = Lend.BookServer.start_link(18)
     {:ok, book_server: book_server}
   end
 
   test "initial book is empty", %{book_server: book_server} do
-    assert Lend.BookServer.fetch(book_server) == Lend.Book.new()
+    assert %Lend.Book{lend: [], borrow: [], term: 18} == Lend.BookServer.fetch(book_server)
   end
 
   test "add: borrow order", %{book_server: book_server} do
@@ -16,7 +16,7 @@ defmodule BookServerTest do
     lend_order = %Lend.Order{side: :lend, size: 11000, rate: 0.06, party: "Bill"}
     Lend.BookServer.add(book_server, lend_order)
 
-    assert %Lend.Book{borrow: [borrow_order], lend: [lend_order]} ==
+    assert %Lend.Book{borrow: [borrow_order], lend: [lend_order], term: 18} ==
              Lend.BookServer.fetch(book_server)
   end
 
@@ -32,8 +32,8 @@ defmodule BookServerTest do
 
     assert Lend.BookServer.cross(book_server) ==
              [
-               %Lend.Loan{rate: 0.04, size: 10000, lender: "Rich", borrower: "Pete"},
-               %Lend.Loan{rate: 0.04, size: 5000, lender: "Rich", borrower: "Bob"}
+               %Lend.Loan{rate: 0.04, size: 10000, lender: "Rich", borrower: "Pete", term: 18},
+               %Lend.Loan{rate: 0.04, size: 5000, lender: "Rich", borrower: "Bob", term: 18}
              ]
 
     assert %{

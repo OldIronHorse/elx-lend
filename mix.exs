@@ -19,7 +19,8 @@ defmodule Lend.Mixfile do
     # Specify extra applications you'll use from Erlang/Elixir
     [
       mod: {Lend, []},
-      extra_applications: [:logger], mod: {Lend.Application, []}
+      extra_applications: [:logger],
+      mod: {Lend.Application, []}
     ]
   end
 

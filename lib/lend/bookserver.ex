@@ -7,9 +7,14 @@ defmodule Lend.BookServer do
   @doc """
   Starts the book server
   """
-  def start_link(name) do
-    Logger.info("name=#{Kernel.inspect(name)}")
-    GenServer.start_link(__MODULE__, %Lend.Book{}, name: name)
+  def start_link(term) do
+    Logger.info("term=#{Kernel.inspect(term)}")
+
+    GenServer.start_link(
+      __MODULE__,
+      Lend.Book.new(term),
+      name: String.to_atom("lendingbook_#{term}m")
+    )
   end
 
   @doc """

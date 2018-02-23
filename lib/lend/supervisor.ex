@@ -10,7 +10,7 @@ defmodule Lend.Supervisor do
     books = Application.get_env(:lend, :books)
     Logger.info("books=#{Kernel.inspect(books)}")
 
-    children = 
+    children =
       for book <- books do
         worker(Lend.BookServer, [book], id: book)
       end

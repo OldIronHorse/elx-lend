@@ -21,3 +21,6 @@ erl_crash.dump
 
 # vim temp files
 *.swp
+
+# Mnesia
+Mnesia.*/
